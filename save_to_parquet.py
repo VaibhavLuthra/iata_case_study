@@ -17,9 +17,9 @@ def lambda_handler(event, context):
     
     csv_file_key = event['csv_file_key']
     parquet_file_key = event.get('parquet_file_key', 'parquet_data/sales.parquet')  # Ensure this includes the file name
-    parquet_file_prefix = 'parquet_data/'
-    source_location = 'raw_data'
-    archive_location = 'archive'
+    parquet_file_prefix = event['parquet_file_prefix']
+    source_location = event['source_location']
+    archive_location = event['archive_location']
     
 
     try:
@@ -46,9 +46,6 @@ def read_csv_from_s3(bucket_name, csv_file_key):
     return csv_content
     
 def convert_csv_to_parquet(csv_content, bucket_name, parquet_file_prefix):
-    df = pd.read_csv(io.StringIO(csv_content))
-    path = 's3://iata-case-study/sales_parquet/'
-    
     # Convert CSV content to DataFrame
     print("Converting CSV content to DataFrame")
     df = pd.read_csv(io.StringIO(csv_content))
